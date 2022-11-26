@@ -18,7 +18,11 @@ async function run() {
         const categories = client.db("sneakerv2-0").collection('categories');
         const products = client.db("sneakerv2-0").collection('products');
 
-        app.get('/categories', async(req, res))
+        app.get('/categories', async (req, res) => {
+            const query = {};
+            const result = await categories.find(query).toArray();
+            res.send(result)
+        })
     }
     finally {
         
