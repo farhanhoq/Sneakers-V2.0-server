@@ -29,14 +29,13 @@ async function run() {
         app.get('/products', async (req, res) => {
             const email = req.query.email;
             const query = { email: email};
-            const allproducts = await products.find(query).toArray();
-            res.send(allproducts)
+            const result = await products.find(query).toArray();
+            res.send(result)
         })
     
         app.get('/products/:id', async (req, res) => {
             const c_ID = req.params.id;
             const query = { c_ID: c_ID };
-            console.log(query);
             const result = await products.find(query).toArray();
             return res.send(result);
         })
@@ -44,6 +43,26 @@ async function run() {
         app.post('/products', async (req, res) => {
             const product = req.body;
             const result = await products.insertOne(product);
+            res.send(result)
+        })
+
+        app.put('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = {upsert: true}
+            const updateDoc = {
+                $set: {
+                    status: 'Sold'
+                } 
+            }
+            const result = await products.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+        app.get('/bookings', async (req, res) => {
+            const email = req.query.email;
+            const query = {email: email};
+            const result = await bookings.find(query).toArray();
             res.send(result)
         })
 
@@ -55,17 +74,17 @@ async function run() {
 
         app.get('/users', async (req, res) => {
             const query = {};
-            const allusers = await users.find(query).toArray();
-            res.send(allusers)
+            const result = await users.find(query).toArray();
+            res.send(result)
         })
 
         app.get('/users/role/:email', async (req, res) => {
             const email = req.params.email;
             // console.log(email)
             const query = { email: email };
-            const user = await users.findOne(query);
+            const result = await users.findOne(query);
             // console.log(user)
-            res.send(user)
+            res.send(result)
         })
 
         app.post('/users', async(req, res) => {
