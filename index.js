@@ -59,6 +59,13 @@ async function run() {
             res.send(result);
         })
 
+        app.delete('/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await products.deleteOne(filter);
+            res.send(result);
+        })
+
         app.get('/bookings', async (req, res) => {
             const email = req.query.email;
             const query = {email: email};
