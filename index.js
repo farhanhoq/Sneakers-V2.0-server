@@ -46,20 +46,31 @@ async function run() {
             res.send(result);
         })
 
-        app.post('/products', async (req, res) => {
+        app.post('/allproducts', async (req, res) => {
             const product = req.body;
             const result = await products.insertOne(product);
             res.send(result)
         })
 
-        app.put('/products/:id', async (req, res) => {
+        app.put('/allproducts/status/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const options = {upsert: true}
             const updateDoc = {
                 $set: {
-                    status: 'Sold'
-                },
+                    status: 'Sold',
+                    advertised: false
+                }
+            }
+            const result = await products.updateOne(filter, updateDoc, options);
+            res.send(result);
+        })
+
+        app.put('/allproducts/advertise/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = {upsert: true}
+            const updateDoc = {
                 $set: {
                     advertised: true
                 }
@@ -68,7 +79,7 @@ async function run() {
             res.send(result);
         })
 
-        app.delete('/products/:id', async (req, res) => {
+        app.delete('/allproducts/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
             const result = await products.deleteOne(filter);
@@ -95,6 +106,15 @@ async function run() {
         })
 
         app.get('/users/role/:email', async (req, res) => {
+            const email = req.params.email;
+            // console.log(email)
+            const query = { email: email };
+            const result = await users.findOne(query);
+            // console.log(user)
+            res.send(result)
+        })
+
+        app.get('/users/verified/:email', async (req, res) => {
             const email = req.params.email;
             // console.log(email)
             const query = { email: email };
