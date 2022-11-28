@@ -26,14 +26,14 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/products', async (req, res) => {
+        app.get('/allproducts', async (req, res) => {
             const query = { };
             const result = await products.find(query).toArray();
             res.send(result)
         })
 
-        app.get('/products/:email', async (req, res) => {
-            const email = req.params.email;
+        app.get('/products', async (req, res) => {
+            const email = req.query.email;
             const query = { email: email};
             const result = await products.find(query).toArray();
             res.send(result)
@@ -43,7 +43,7 @@ async function run() {
             const c_ID = req.params.id;
             const query = { c_ID: c_ID };
             const result = await products.find(query).toArray();
-            return res.send(result);
+            res.send(result);
         })
 
         app.post('/products', async (req, res) => {
@@ -106,6 +106,19 @@ async function run() {
         app.post('/users', async(req, res) => {
             const user = req.body;
             const result = await users.insertOne(user);
+            res.send(result);
+        })
+
+        app.put('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = {upsert: true}
+            const updateDoc = {
+                $set: {
+                    isVerified: true
+                }
+            }
+            const result = await users.updateOne(filter, updateDoc, options);
             res.send(result);
         })
 
