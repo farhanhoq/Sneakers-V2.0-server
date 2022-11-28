@@ -27,7 +27,13 @@ async function run() {
         })
 
         app.get('/products', async (req, res) => {
-            const email = req.query.email;
+            const query = { };
+            const result = await products.find(query).toArray();
+            res.send(result)
+        })
+
+        app.get('/products/:email', async (req, res) => {
+            const email = req.params.email;
             const query = { email: email};
             const result = await products.find(query).toArray();
             res.send(result)
@@ -53,7 +59,10 @@ async function run() {
             const updateDoc = {
                 $set: {
                     status: 'Sold'
-                } 
+                },
+                $set: {
+                    advertised: true
+                }
             }
             const result = await products.updateOne(filter, updateDoc, options);
             res.send(result);
@@ -97,6 +106,13 @@ async function run() {
         app.post('/users', async(req, res) => {
             const user = req.body;
             const result = await users.insertOne(user);
+            res.send(result);
+        })
+
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await users.deleteOne(filter);
             res.send(result);
         })
     }
